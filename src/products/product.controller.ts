@@ -6,12 +6,12 @@ export class ProductController {
     constructor(private readonly productService: ProductService) {}
 
     @Post()
-    addProduct(
+    async addProduct(
         @Body('title') prodTitle: string,
         @Body('desc') prodDesc: string,
         @Body('price') prodPrice: number,
     ) {
-        const generatedId = this.productService.insertProduct(
+        const generatedId = await this.productService.insertProduct(
             prodTitle, 
             prodDesc, 
             prodPrice
@@ -20,13 +20,15 @@ export class ProductController {
     }
 
     @Get()
-    getAllProducts() {
-        return {product: this.productService.getProducts()};
+    async getAllProducts() {
+        const products = await this.productService.getProducts();
+        return { products: products };
     }
 
     @Get(':id')
-    getProduct(@Param('id') prodId: string) {
-        return this.productService.getProduct(prodId);
+    async getProduct(@Param('id') prodId: string) {
+        const product = await this.productService.getProduct(prodId);
+        return product;
     }
 
     @Patch(':id')
@@ -41,8 +43,8 @@ export class ProductController {
     }
 
     @Delete(':id')
-    deleteProduct(@Param('id') prodId: string) {
-        this.productService.deleteProduct(prodId);
+    async deleteProduct(@Param('id') prodId: string) {
+        await this.productService.deleteProduct(prodId);
         return { message: 'Success Delete Product' };
     }
 
